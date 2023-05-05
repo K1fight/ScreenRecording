@@ -6,10 +6,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.videoio.*;
 import java.awt.*;
-import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.*;
 import java.time.LocalTime;
 
 public class ScreenRecording {
@@ -24,7 +22,7 @@ public class ScreenRecording {
     VideoWriter writer;
 
     public ScreenRecording() throws AWTException {
-        output = LocalTime.now() +".mp4";
+        output = "./" + LocalTime.now() +".mp4";
         robot = new Robot();
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         size = new Size(screenSize.getWidth(),screenSize.getHeight());
@@ -33,6 +31,7 @@ public class ScreenRecording {
     }
 
     public  void start() {
+        System.out.println("Start");
         int i = 0;
         do {
             BufferedImage image = robot.createScreenCapture(screenSize);
