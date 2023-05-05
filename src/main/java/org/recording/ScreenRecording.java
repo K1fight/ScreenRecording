@@ -9,10 +9,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Timer;
 
 public class ScreenRecording {
 
     static {OpenCV.loadLocally();}
+    ArrayList<BufferedImage> buffer;
 
     String output;
     Robot robot;
@@ -20,25 +23,35 @@ public class ScreenRecording {
     Size size;
     int fourcc;
     VideoWriter writer;
+    BufferedImage image;
 
     public ScreenRecording() throws AWTException {
+        buffer = new ArrayList<>();
         output = "./" + LocalTime.now() +".mp4";
         robot = new Robot();
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         size = new Size(screenSize.getWidth(),screenSize.getHeight());
         fourcc = VideoWriter.fourcc('H','2','6','4');
-        writer = new VideoWriter(output,fourcc,30.0,size,true);
+        writer = new VideoWriter(output,fourcc,10.68,size,true);
     }
 
     public  void start() {
         System.out.println("Start");
         int i = 0;
-        do {
-            BufferedImage image = robot.createScreenCapture(screenSize);
+        long start = System.nanoTime();
+        while(i<120){
+            image = robot.createScreenCapture(screenSize);
+            buffer.add(image);
+            i++;
+        }
+        long end = System.nanoTime();
+        double period = (end - start)/1_000_000_000.0;
+        System.out.printf("%.2f%n",buffer.size()/period);
+
+        for(BufferedImage image : buffer){
             Mat img = bufferedImageToMat(image);
             writer.write(img);
-            i++;
-        } while (i != 120);
+        }
         writer.release();
 
     }

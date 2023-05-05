@@ -24,7 +24,7 @@ public class UI extends JFrame {
         start = new JButton("start");
         start.setSize(30,20);
         start.addActionListener(e -> {
-            if(e.getSource().equals("start")){
+            if(e.getSource()==start){
                 try {
                     startRecording();
                 } catch (AWTException ex) {
