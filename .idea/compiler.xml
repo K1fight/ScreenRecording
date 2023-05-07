@@ -15,7 +15,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ScreenRecording" options="--add-modules java.desktop" />
+      <module name="ScreenRecording" options="" />
     </option>
   </component>
 </project>

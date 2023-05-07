@@ -1,8 +1,12 @@
 package org.recording;
 
 
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FrameRecorder;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class UI extends JFrame {
     JButton start ;
@@ -27,7 +31,7 @@ public class UI extends JFrame {
             if(e.getSource()==start){
                 try {
                     startRecording();
-                } catch (AWTException ex) {
+                } catch (AWTException | IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -36,9 +40,9 @@ public class UI extends JFrame {
         add(p1);
         setVisible(true);
     }
-    private void startRecording() throws AWTException {
-        ScreenRecording screenRecording = new ScreenRecording();
-        screenRecording.start();
+    private void startRecording() throws AWTException, IOException {
+        JavacvRecording javaCV = new JavacvRecording();
+        javaCV.start();
 
     }
     public static void main(String[]args){
