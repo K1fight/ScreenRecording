@@ -16,7 +16,7 @@ import java.time.LocalTime;
 public class JavacvRecording {
     double captureWidth,captureHeight;
     int x,y;
-    String option,format,device,outputFile,unsharp;
+    String option,format,device,outputFile;
     Rectangle screenSize;
     FFmpegFrameGrabber grabber;
     FrameRecorder recorder;
@@ -30,7 +30,7 @@ public class JavacvRecording {
         format = "avfoundation";
         option = "capture_cursor";
         device = "1";
-        unsharp =  "unsharp=5:5:1.0:5:5:0.0";
+//        unsharp =  "unsharp=5:5:1.0:5:5:0.0";
     }
     public void start() throws IOException {
         System.out.println("Start");
@@ -67,14 +67,18 @@ public class JavacvRecording {
         outputFile = "./" + LocalTime.now() + ".mp4";
         recorder = new FFmpegFrameRecorder(outputFile,(int)captureWidth,(int)captureHeight,2);
         recorder.setInterleaved(true);
+        recorder.setVideoQuality(0);
         recorder.setVideoOption("crf","18");
-        recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+        recorder.setVideoCodec(avcodec.AV_CODEC_ID_MPEG4);
         recorder.setFormat("mp4");
+        recorder.setSampleRate(44100);
         recorder.setFrameRate(60);
         recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
         recorder.setVideoBitrate(10000*1000);
         recorder.setGopSize(60);
-        recorder.setVideoOption("preset","veryfast");
+        recorder.setVideoOption("preset","ultrafast");
+//        recorder.setAudioChannels(2);
+//        recorder.setAudioOption("crf","0");
         recorder.start();
 
     }
