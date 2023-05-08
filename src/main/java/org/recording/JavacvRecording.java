@@ -43,7 +43,7 @@ public class JavacvRecording {
         }
 //        frame = grabber.grab();
 //        Java2DFrameConverter converter  = new Java2DFrameConverter();
-//        BufferedImage image = converter.convert(filtered);
+//        BufferedImage image = converter.convert(frame);
 //        ImageIO.write(image,"bmp",new File("./2.bmp"));
         recorder.stop();
         recorder.release();

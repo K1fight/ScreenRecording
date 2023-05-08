@@ -15,7 +15,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ScreenRecording" options="" />
+      <module name="ScreenRecording" options="--add-exports java.desktop/sun.java2d=ALL-UNNAMED" />
     </option>
   </component>
 </project>

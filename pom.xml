@@ -24,6 +24,16 @@
             <artifactId>javacv-platform</artifactId>
             <version>1.5.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.msgpack</groupId>
+            <artifactId>msgpack-core</artifactId>
+            <version>0.9.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>5.4.0</version>
+        </dependency>
     </dependencies>
 
 </project>
