@@ -30,7 +30,6 @@ public class JavacvRecording {
         format = "avfoundation";
         option = "capture_cursor";
         device = "1";
-//        unsharp =  "unsharp=5:5:1.0:5:5:0.0";
     }
     public void start() throws IOException {
         System.out.println("Start");
@@ -41,10 +40,6 @@ public class JavacvRecording {
             frame = grabber.grab();
             recorder.record(frame);
         }
-//        frame = grabber.grab();
-//        Java2DFrameConverter converter  = new Java2DFrameConverter();
-//        BufferedImage image = converter.convert(frame);
-//        ImageIO.write(image,"bmp",new File("./2.bmp"));
         recorder.stop();
         recorder.release();
         grabber.stop();

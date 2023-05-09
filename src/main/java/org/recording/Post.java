@@ -2,7 +2,8 @@ package org.recording;
 
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import org.tools.SerializeFrameKyroBuffer;
+import org.tools.SerializeFrameJava;;
+import org.tools.Serialize;
 
 
 import java.io.IOException;
@@ -11,15 +12,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Post {
-    private static final Java2DFrameConverter converter = new Java2DFrameConverter();
     ServerSocket server;
     Socket s;
     ObjectOutputStream output;
-    SerializeFrameKyroBuffer serializeFrameKryoB;
+    Serialize serialize;
 
 
     public Post() throws IOException, ClassNotFoundException {
-        serializeFrameKryoB = new SerializeFrameKyroBuffer();
+        serialize = new SerializeFrameJava();
         server = new ServerSocket(9999);
         System.out.println("Start listening");
         s = server.accept();
@@ -27,7 +27,7 @@ public class Post {
         output = new ObjectOutputStream(s.getOutputStream());
     }
     public void start(Frame frame) throws IOException {
-        output.write(serializeFrameKryoB.serialize(frame));
+        output.write(serialize.serialize(frame));
         output.flush();
         output.close();
         server.close();
