@@ -1,27 +1,24 @@
 package org.recording;
 
-import org.bytedeco.ffmpeg.global.avcodec;
-import org.bytedeco.ffmpeg.global.avutil;
+import javafx.geometry.Pos;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
 
-import javax.imageio.ImageIO;
+
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalTime;
 
 
 public class JavacvRecording {
+    Post post;
     double captureWidth,captureHeight;
     int x,y;
     String option,format,device,outputFile;
     Rectangle screenSize;
     FFmpegFrameGrabber grabber;
-    FrameRecorder recorder;
+    Frame frame;
 
-    public JavacvRecording(){
+    public JavacvRecording() throws IOException, ClassNotFoundException {
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         captureWidth = screenSize.getWidth();
         captureHeight = screenSize.getHeight();
@@ -30,20 +27,21 @@ public class JavacvRecording {
         format = "avfoundation";
         option = "capture_cursor";
         device = "1";
+        capture();
+        post = new Post();
     }
     public void start() throws IOException {
         System.out.println("Start");
-        capture();
-        recording();
-        Frame frame;
-        for(int i =0 ;i<120;i++){
+        long start = System.nanoTime();
+        for(int i =0 ;i<300;i++){
             frame = grabber.grab();
-            recorder.record(frame);
+            post.start(frame);
         }
-        recorder.stop();
-        recorder.release();
+        long end = System.nanoTime();
+        System.out.println(300/((end-start)/1_000_000_000));
         grabber.stop();
         grabber.release();
+//        post.close();
         System.out.println("Finish");
 
 
@@ -56,25 +54,6 @@ public class JavacvRecording {
         grabber.setImageWidth((int)captureWidth);
         grabber.setFrameRate(60);
         grabber.start();
-
-    }
-    private void recording() throws FrameRecorder.Exception {
-        outputFile = "./" + LocalTime.now() + ".mp4";
-        recorder = new FFmpegFrameRecorder(outputFile,(int)captureWidth,(int)captureHeight,2);
-        recorder.setInterleaved(true);
-        recorder.setVideoQuality(0);
-        recorder.setVideoOption("crf","18");
-        recorder.setVideoCodec(avcodec.AV_CODEC_ID_MPEG4);
-        recorder.setFormat("mp4");
-        recorder.setSampleRate(44100);
-        recorder.setFrameRate(60);
-        recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
-        recorder.setVideoBitrate(10000*1000);
-        recorder.setGopSize(60);
-        recorder.setVideoOption("preset","ultrafast");
-//        recorder.setAudioChannels(2);
-//        recorder.setAudioOption("crf","0");
-        recorder.start();
 
     }
 

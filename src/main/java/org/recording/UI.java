@@ -1,11 +1,11 @@
 package org.recording;
 
 
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.FrameRecorder;
+import org.receving.Client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 public class UI extends JFrame {
@@ -31,22 +31,31 @@ public class UI extends JFrame {
             if(e.getSource()==start){
                 try {
                     startRecording();
-                } catch (AWTException | IOException ex) {
+                } catch (AWTException | IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
+        Action exitAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        };
+        p1.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"),"exit");
+        p1.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("q"),"exit");
+        p1.getActionMap().put("exit",exitAction);
         p1.add(start);
         add(p1);
         setVisible(true);
     }
-    private void startRecording() throws AWTException, IOException {
+    private void startRecording() throws AWTException, IOException, ClassNotFoundException {
         JavacvRecording javaCV = new JavacvRecording();
         javaCV.start();
 
     }
     public static void main(String[]args){
-        UI ui = UI.getInstance();
+        UI.getInstance();
     }
-
 }
+
