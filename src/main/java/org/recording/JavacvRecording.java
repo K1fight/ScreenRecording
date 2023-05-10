@@ -13,10 +13,11 @@ public class JavacvRecording {
     Post post;
     double captureWidth,captureHeight;
     int x,y;
-    String option,format,device,outputFile;
+    String option,format,device,osName;
     Rectangle screenSize;
     FFmpegFrameGrabber grabber;
     Frame frame;
+
 
     public JavacvRecording() throws IOException, ClassNotFoundException {
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
@@ -24,11 +25,22 @@ public class JavacvRecording {
         captureHeight = screenSize.getHeight();
         x = 0;
         y = 0;
-        format = "avfoundation";
-        option = "capture_cursor";
-        device = "1";
         capture();
         post = new Post();
+        osName = System.getProperty("os.name").toLowerCase();
+        if (osName.startsWith("windows")) {
+            format = "gdigrab";
+            option = "desktop";
+            device = "desktop";
+        } else if (osName.startsWith("mac")) {
+            format = "avfoundation";
+            option = "capture_cursor";
+            device = "1";
+        } else { // Linux
+            format = "x11grab";
+            option = "draw_mouse";
+            device = ":0.0";
+        }
     }
     public void start() throws IOException {
         System.out.println("Start");
@@ -36,6 +48,7 @@ public class JavacvRecording {
         for(int i =0 ;i<300;i++){
             frame = grabber.grab();
             post.start(frame);
+//            while (post.isAlive());
         }
         long end = System.nanoTime();
         System.out.println(300/((end-start)/1_000_000_000));

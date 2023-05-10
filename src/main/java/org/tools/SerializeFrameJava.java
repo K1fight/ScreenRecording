@@ -8,37 +8,32 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public class SerializeFrameJava implements Runnable{
-    Thread t;
+public class SerializeFrameJava extends Thread{
     ByteArrayOutputStream baos;
     Java2DFrameConverter converter;
     BufferedImage buffer;
-    public SerializeFrameJava(){
-        converter = new Java2DFrameConverter();
-    }
     Frame frame;
     byte[] data;
-    public void setFrame(Frame frame){
+    public SerializeFrameJava(Frame frame) {
+        converter = new Java2DFrameConverter();
         this.frame = frame;
     }
-
-    @Override
-    public void run() {
+    public void serialize(Frame frame) throws IOException {
+        System.out.println(frame.imageWidth);
         baos = new ByteArrayOutputStream();
         buffer = converter.convert(frame);
+        ImageIO.write(buffer,"png",baos);
+        data = baos.toByteArray();
+    }
+    public byte[] getData(){
+        return data;
+    }
+    @Override
+    public void run() {
         try {
-            ImageIO.write(buffer,"png",baos);
+            serialize(frame);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        data = baos.toByteArray();
-    }
-
-    public byte[] start() {
-        if(t == null){
-            t = new Thread(this,"1");
-            t.start();
-        }
-        return data;
     }
 }
