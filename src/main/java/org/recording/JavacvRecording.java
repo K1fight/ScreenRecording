@@ -25,8 +25,6 @@ public class JavacvRecording {
         captureHeight = screenSize.getHeight();
         x = 0;
         y = 0;
-        capture();
-        post = new Post();
         osName = System.getProperty("os.name").toLowerCase();
         if (osName.startsWith("windows")) {
             format = "gdigrab";
@@ -41,6 +39,8 @@ public class JavacvRecording {
             option = "draw_mouse";
             device = ":0.0";
         }
+        capture();
+        post = new Post();
     }
     public void start() throws IOException {
         System.out.println("Start");

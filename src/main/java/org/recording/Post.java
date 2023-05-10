@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 public class Post {
     Thread t1,t2,t3;
@@ -18,6 +17,7 @@ public class Post {
     ObjectOutputStream output;
     SerializeFrameJava buffer;
     ExecutorService ES;
+    ThreadPoolExecutor TPE;
 
 
     public Post() throws IOException, ClassNotFoundException {
@@ -27,21 +27,16 @@ public class Post {
 //        s = server.accept();
 //        System.out.println("receive connection");
 //        output = new ObjectOutputStream(s.getOutputStream());
-        ES = Executors.newCachedThreadPool();
-        counter = 0;
+          TPE = new ThreadPoolExecutor(4,12,10L, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
+
     }
     public void start(Frame frame) throws IOException {
-        ES.submit(new SerializeFrameJava(frame));
+        TPE.submit(()->{
+                new SerializeFrameJava(frame).start();
+            System.out.println("name :" +  Thread.currentThread().getName());
+                }
+        );
     }
-//    public boolean isAlive(){
-//
-//        if(t1.isAlive()&&t2.isAlive()&&t3.isAlive()){
-//            return true;
-//        }
-//        else{
-//            return false;
-//        }
-//    }
     public void close() throws IOException {
         output.close();
         server.close();

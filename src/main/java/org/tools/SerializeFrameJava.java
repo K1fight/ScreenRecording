@@ -19,7 +19,7 @@ public class SerializeFrameJava extends Thread{
         this.frame = frame;
     }
     public void serialize(Frame frame) throws IOException {
-        System.out.println(frame.imageWidth);
+        System.out.println("Width:"+ frame.imageWidth);
         baos = new ByteArrayOutputStream();
         buffer = converter.convert(frame);
         ImageIO.write(buffer,"png",baos);
