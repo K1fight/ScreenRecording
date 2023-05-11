@@ -18,7 +18,7 @@ public class Get {
     public Get() throws IOException{
         de= new Deserialize();
         System.out.println("start connecting");
-        socket = new Socket("127.0.0.1",9999);
+        socket = new Socket("192.168.100.112",9999);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         buffer = new LinkedList<>();
     }
@@ -36,6 +36,7 @@ public class Get {
         socket.close();
     }
     public boolean getEmpty() throws IOException, ClassNotFoundException {
+        System.out.println("1");
         buffer.add((byte[])objectInputStream.readObject());
         return buffer.isEmpty();
     }
