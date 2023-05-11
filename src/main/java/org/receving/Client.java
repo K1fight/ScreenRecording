@@ -27,7 +27,7 @@ public class Client {
     }
     public void start() throws IOException, ClassNotFoundException {
         System.out.println("start");
-        for(int i = 0;i<300;i++){
+        for(int i = 0;i<600;i++){
             while (get.getEmpty());
             frame = get.get();
             recorder.record(frame);

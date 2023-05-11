@@ -1,5 +1,6 @@
 package org.tools;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -11,6 +12,7 @@ public class MyThreadspool {
     private static final int MAX_TASKS = 300;
     private final BlockingQueue<SerializeFrameJava> taskQueue;
     private final Set<WorkThread> threads;
+    private final BlockingQueue<SerializeFrameJava> order;
     private int thread;
     private int task;
     private boolean quit;
@@ -26,9 +28,12 @@ public class MyThreadspool {
             this.task = MAX_TASKS;
         }
         this.taskQueue = new LinkedBlockingQueue<>(task);
+        this.order = new LinkedBlockingQueue<>(24);
         threads = new HashSet<>();
         this.task = task;
         this.thread = thread;
+        DaemenThread daemen = new DaemenThread("daemen-1");
+        daemen.start();
         for(int i = 0;i<thread;i++){
             WorkThread workThread = new WorkThread("thread"+i);
             workThread.start();
@@ -70,7 +75,7 @@ public class MyThreadspool {
                 if(!quit){
                     try {
                         SerializeFrameJava temp = taskQueue.take();
-
+                        order.put(temp);
                         temp.serialize();
                     } catch (Exception e) {
                         interrupt();
@@ -85,7 +90,27 @@ public class MyThreadspool {
             interrupt();
         }
     }
-    private class DaemenThread{
+    private class DaemenThread extends Thread{
+        public DaemenThread(String name){
+            super();
+            setName(name);
+        }
+        @Override
+        public void run(){
+            while (!interrupted()){
+                try {
+                    SerializeFrameJava temp = order.take();
+                    while (true){
+                        if(temp.status){
+                            temp.send();
+                            break;
+                        }
+                    }
+                } catch (InterruptedException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 
     }
 }

@@ -52,7 +52,7 @@ public class JavacvRecording {
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         System.out.println("Start");
         long start = System.nanoTime();
-        for(int i =0 ;i<300;i++){
+        for(int i =0 ;i<600;i++){
             frame = grabber.grab();
             post.start(frame);
         }
