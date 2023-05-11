@@ -31,7 +31,7 @@ public class UI extends JFrame {
             if(e.getSource()==start){
                 try {
                     startRecording();
-                } catch (AWTException | IOException | ClassNotFoundException ex) {
+                } catch (AWTException | IOException | ClassNotFoundException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -49,7 +49,7 @@ public class UI extends JFrame {
         add(p1);
         setVisible(true);
     }
-    private void startRecording() throws AWTException, IOException, ClassNotFoundException {
+    private void startRecording() throws AWTException, IOException, ClassNotFoundException, InterruptedException {
         JavacvRecording javaCV = new JavacvRecording();
         javaCV.start();
 

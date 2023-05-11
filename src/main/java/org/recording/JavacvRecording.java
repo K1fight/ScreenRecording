@@ -3,6 +3,8 @@ package org.recording;
 import javafx.geometry.Pos;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
+import org.tools.MyThreadspool;
+import org.tools.SerializeFrameJava;
 
 
 import java.awt.*;
@@ -18,9 +20,12 @@ public class JavacvRecording {
     FFmpegFrameGrabber grabber;
     Frame frame;
     Frame[] bufferFrame;
+    SerializeFrameJava ser;
+    MyThreadspool pool;
 
 
     public JavacvRecording() throws IOException, ClassNotFoundException {
+        pool = new MyThreadspool();
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         captureWidth = screenSize.getWidth();
         captureHeight = screenSize.getHeight();
@@ -42,9 +47,9 @@ public class JavacvRecording {
             device = ":0.0";
         }
         capture();
-        post = new Post();
+        post = Post.getInstance();
     }
-    public void start() throws IOException {
+    public void start() throws IOException, InterruptedException, ClassNotFoundException {
         System.out.println("Start");
         long start = System.nanoTime();
         for(int i =0 ;i<300;i++){
@@ -55,7 +60,7 @@ public class JavacvRecording {
         System.out.println(300/((end-start)/1_000_000_000));
         grabber.stop();
         grabber.release();
-//        post.close();
+        post.close();
         System.out.println("Finish");
 
 

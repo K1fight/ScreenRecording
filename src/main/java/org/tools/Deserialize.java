@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class Deserialize implements Runnable{
+public class Deserialize{
     Java2DFrameConverter converter;
     Frame frame;
     BufferedImage buffer;
@@ -20,16 +20,10 @@ public class Deserialize implements Runnable{
         converter = new Java2DFrameConverter();
     }
     public Frame deSerialize(byte[] data) throws IOException {
-        System.out.println("2");
         bais = new ByteArrayInputStream(data);
         buffer = ImageIO.read(bais);
         frame = converter.convert(buffer);
         return frame;
-    }
-
-
-    @Override
-    public void run() {
     }
 
 

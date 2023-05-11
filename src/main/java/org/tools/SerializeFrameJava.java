@@ -2,41 +2,37 @@ package org.tools;
 
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.recording.Post;
+import org.recording.UI;
 
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public class SerializeFrameJava extends Thread{
+public  class  SerializeFrameJava{
+    private static final long serialVersionUID = 1L;
     ByteArrayOutputStream baos;
     Java2DFrameConverter converter;
     BufferedImage buffer;
-    Frame frame;
+    public Frame frame;
     byte[] data;
-    public SerializeFrameJava(Frame frame) {
+    Post post;
+    boolean status;
+    public SerializeFrameJava(Frame frame) throws IOException, ClassNotFoundException {
         converter = new Java2DFrameConverter();
         this.frame = frame;
-
+        post = Post.getInstance();
+        status = false;
     }
-    public byte[] serialize(Frame frame) throws IOException {
-        System.out.println(this.frame.imageWidth);
-        System.out.println("1");
+    public void serialize() throws IOException {
         baos = new ByteArrayOutputStream();
         buffer = converter.convert(frame);
         ImageIO.write(buffer,"png",baos);
         data = baos.toByteArray();
-        return data;
+        status = true;
     }
-    public byte[] getData(){
-        return this.data;
-    }
-    @Override
-    public void run() {
-        try {
-            serialize(this.frame);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void send() throws IOException {
+        post.send(data);
     }
 }
