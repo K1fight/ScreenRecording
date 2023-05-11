@@ -22,13 +22,13 @@ public class Get {
         buffer = new LinkedList<>();
     }
 //    public void start() throws IOException, ClassNotFoundException {
-//        buffer.add(serialize.deserialize(objectInputStream.readAllBytes()));
+//        buffer.add(buffer.deSerialize(objectInputStream.readAllBytes()));
 //        System.out.println("2");
 //    }
     public Frame get() throws IOException, ClassNotFoundException {
-
+        Frame frame = de.deSerialize(buffer.getFirst());
         buffer.removeFirst();
-        return null;
+        return frame;
     }
     public void close() throws IOException {
         objectInputStream.close();

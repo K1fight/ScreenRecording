@@ -17,21 +17,24 @@ public class SerializeFrameJava extends Thread{
     public SerializeFrameJava(Frame frame) {
         converter = new Java2DFrameConverter();
         this.frame = frame;
+
     }
-    public void serialize(Frame frame) throws IOException {
-        System.out.println("Width:"+ frame.imageWidth);
+    public byte[] serialize(Frame frame) throws IOException {
+        System.out.println(this.frame.imageWidth);
+        System.out.println("1");
         baos = new ByteArrayOutputStream();
         buffer = converter.convert(frame);
         ImageIO.write(buffer,"png",baos);
         data = baos.toByteArray();
+        return data;
     }
     public byte[] getData(){
-        return data;
+        return this.data;
     }
     @Override
     public void run() {
         try {
-            serialize(frame);
+            serialize(this.frame);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
