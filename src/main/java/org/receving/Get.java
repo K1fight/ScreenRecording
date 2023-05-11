@@ -4,6 +4,7 @@ import org.bytedeco.javacv.Frame;
 import org.tools.Deserialize;
 import org.tools.SerializeFrameJava;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -25,10 +26,10 @@ public class Get {
 //        buffer.add(buffer.deSerialize(objectInputStream.readAllBytes()));
 //        System.out.println("2");
 //    }
-    public Frame get() throws IOException, ClassNotFoundException {
-        Frame frame = de.deSerialize(buffer.getFirst());
+    public BufferedImage get() throws IOException, ClassNotFoundException {
+        BufferedImage img = de.deSerialize(buffer.getFirst());
         buffer.removeFirst();
-        return frame;
+        return img;
     }
     public void close() throws IOException {
         objectInputStream.close();

@@ -23,13 +23,11 @@ public class Client {
         get = new Get();
         captureHeight = 900;
         captureWidth = 1440;
-        recording();
     }
     public void start() throws IOException, ClassNotFoundException {
         System.out.println("start");
         for(int i = 0;i<600;i++){
             while (get.getEmpty());
-            frame = get.get();
             recorder.record(frame);
         }
         get.close();
@@ -37,21 +35,21 @@ public class Client {
         recorder.release();
         System.out.println("Finish");
     }
-    private void recording() throws FrameRecorder.Exception {
-        outputFile = "./" + LocalTime.now() + ".mp4";
-        recorder = new FFmpegFrameRecorder(outputFile,captureWidth,captureHeight,2);
-        recorder.setInterleaved(true);
-        recorder.setVideoQuality(0);
-        recorder.setVideoOption("crf","18");
-        recorder.setVideoCodec(avcodec.AV_CODEC_ID_MPEG4);
-        recorder.setFormat("mp4");
-        recorder.setSampleRate(44100);
-        recorder.setFrameRate(60);
-        recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
-        recorder.setVideoBitrate(10000*1000);
-        recorder.setGopSize(60);
-        recorder.setVideoOption("preset","ultrafast");
-        recorder.start();
-
-    }
+//    private void recording() throws FrameRecorder.Exception {
+//        outputFile = "./" + LocalTime.now() + ".mp4";
+//        recorder = new FFmpegFrameRecorder(outputFile,captureWidth,captureHeight,2);
+//        recorder.setInterleaved(true);
+//        recorder.setVideoQuality(0);
+//        recorder.setVideoOption("crf","18");
+//        recorder.setVideoCodec(avcodec.AV_CODEC_ID_MPEG4);
+//        recorder.setFormat("mp4");
+//        recorder.setSampleRate(44100);
+//        recorder.setFrameRate(60);
+//        recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
+//        recorder.setVideoBitrate(10000*1000);
+//        recorder.setGopSize(60);
+//        recorder.setVideoOption("preset","ultrafast");
+//        recorder.start();
+//
+//    }
 }

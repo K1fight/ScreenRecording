@@ -19,11 +19,10 @@ public class Deserialize{
     public Deserialize(){
         converter = new Java2DFrameConverter();
     }
-    public Frame deSerialize(byte[] data) throws IOException {
+    public BufferedImage deSerialize(byte[] data) throws IOException {
         bais = new ByteArrayInputStream(data);
         buffer = ImageIO.read(bais);
-        frame = converter.convert(buffer);
-        return frame;
+        return buffer;
     }
 
 
