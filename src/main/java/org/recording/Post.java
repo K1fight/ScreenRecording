@@ -37,6 +37,7 @@ public class Post {
         server = new ServerSocket(10200);
         System.out.println("Start listening");
         s = server.accept();
+        s.setSendBufferSize(1024*1024);
         System.out.println("receive connection");
         output = new ObjectOutputStream(s.getOutputStream());
         pool = MyThreadspool.getInstance();
