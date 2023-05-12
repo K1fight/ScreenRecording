@@ -1,5 +1,6 @@
 package org.recording;
 
+import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
 import org.tools.MyThreadspool;
@@ -69,6 +70,7 @@ public class JavacvRecording {
         grabber = new FFmpegFrameGrabber(device);
         grabber.setOption(option,"1");
         grabber.setFormat(format);
+        grabber.setPixelFormat(avutil.AV_PIX_FMT_NV12);
         grabber.setImageHeight((int)captureHeight);
         grabber.setImageWidth((int)captureWidth);
         grabber.setFrameRate(60);

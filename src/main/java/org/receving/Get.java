@@ -30,7 +30,7 @@ public class Get {
     }
     private Get() throws IOException{
 
-        pool = new MyThreadspool2(8,100);
+        pool = MyThreadspool2.getInstance();
         System.out.println("start connecting");
         socket = new Socket("127.0.0.1",10200);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
