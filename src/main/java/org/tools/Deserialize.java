@@ -30,7 +30,7 @@ public class Deserialize{
         buffer = ImageIO.read(bais);
         status = true;
     }
-    public void send(){
+    public void send() throws InterruptedException {
         get.receive(buffer);
     }
 

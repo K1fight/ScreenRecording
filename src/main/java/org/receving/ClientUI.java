@@ -39,8 +39,8 @@ public class ClientUI extends JFrame {
     public void display() throws IOException, ClassNotFoundException, InterruptedException {
 
         get.receiveData();
+        get.start();
         for(int i = 0;i<600;i++){
-            get.start();
             BufferedImage buffer = get.getFirst();
             p1.setBuffer(buffer);
         }

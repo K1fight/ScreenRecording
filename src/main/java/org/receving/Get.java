@@ -19,7 +19,7 @@ public class Get {
     BlockingQueue<byte[]> buffer;
     MyThreadspool2 pool;
     BlockingQueue<BufferedImage> bufferedImages;
-    Thread t;
+    Thread t,t1;
 
     public static Get getInstance() throws IOException {
         if(get == null){
@@ -40,12 +40,26 @@ public class Get {
     }
 
     public void start() throws IOException, ClassNotFoundException, InterruptedException {
-        pool.execute(new Deserialize(buffer.take()));
+        t1 = new Thread("t1"){
+            @Override
+            public void run(){
+                while(!interrupted()){
+                    try {
+                        pool.execute(new Deserialize(buffer.take()));
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        };
+
+        t1.start();
     }
-    public synchronized void receive(BufferedImage image){
-        bufferedImages.add(image);
+    public synchronized void receive(BufferedImage image) throws InterruptedException {
+        bufferedImages.put(image);
     }
     public BufferedImage getFirst() throws InterruptedException {
+        System.out.println(bufferedImages.size());
         return bufferedImages.take();
 
     }
