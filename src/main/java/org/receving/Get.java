@@ -25,22 +25,22 @@ public class Get {
         }
         return get;
     }
-    public Get() throws IOException{
+    private Get() throws IOException{
         pool = new MyThreadspool2();
         System.out.println("start connecting");
         socket = new Socket("192.168.100.112",9999);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         buffer = new LinkedList<>();
+        bufferedImages = new LinkedList<>();
     }
-//    public void start() throws IOException, ClassNotFoundException {
-//        buffer.add(buffer.deSerialize(objectInputStream.readAllBytes()));
-//        System.out.println("2");
-//    }
-    public void get() throws IOException, ClassNotFoundException {
+
+    public void start() throws IOException, ClassNotFoundException {
+        System.out.println("2");
         pool.execute(new Deserialize(buffer.getFirst()));
         buffer.removeFirst();
     }
     public void receive(BufferedImage image){
+        System.out.println("1");
         bufferedImages.add(image);
     }
     public BufferedImage getFirst(){
@@ -52,8 +52,11 @@ public class Get {
         socket.close();
     }
     public boolean getEmpty() throws IOException, ClassNotFoundException {
-        System.out.println("1");
         buffer.add((byte[])objectInputStream.readObject());
         return buffer.isEmpty();
     }
+    public boolean getEmptyImg(){
+        return bufferedImages.isEmpty();
+    }
+
 }

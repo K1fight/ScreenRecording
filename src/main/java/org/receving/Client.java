@@ -20,7 +20,7 @@ public class Client {
     String outputFile;
     int captureWidth,captureHeight;
     public Client() throws IOException {
-        get = new Get();
+//        get = new Get();
         captureHeight = 900;
         captureWidth = 1440;
     }

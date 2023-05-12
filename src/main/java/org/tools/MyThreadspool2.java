@@ -75,6 +75,7 @@ public class MyThreadspool2 {
                 if(!quit){
                     try {
                         Deserialize temp = taskQueue.take();
+                        System.out.println(temp.data.length);
                         order.put(temp);
                         temp.deSerialize();
                     } catch (Exception e) {

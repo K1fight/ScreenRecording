@@ -29,7 +29,7 @@ public class ClientUI extends JFrame {
         p1.setVisible(true);
 
 
-        get = new Get();
+        get = Get.getInstance();
         add(p1);
         pack();
         setVisible(true);
@@ -42,10 +42,10 @@ public class ClientUI extends JFrame {
         add(p1);
         for(int i = 0;i<600;i++){
             while (get.getEmpty());
+            get.start();
+            while (get.getEmptyImg());
             BufferedImage buffer = get.getFirst();
-            buffer.getWidth();
-            p1.setBuffer(buffer);
-
+//            p1.setBuffer(buffer);
         }
     }
     public static void main(String[] args) throws IOException, ClassNotFoundException {
