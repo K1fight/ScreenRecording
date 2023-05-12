@@ -1,5 +1,7 @@
 package org.tools;
 
+import org.bytedeco.javacv.Frame;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,17 +12,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MyThreadspool {
     private static final int MAX_THREADS = 12;
     private static final int MAX_TASKS = 300;
-    private final BlockingQueue<SerializeFrameJava> taskQueue;
+    private final BlockingQueue<Frame> taskQueue;
     private final Set<WorkThread> threads;
     private final BlockingQueue<SerializeFrameJava> order;
     private int thread;
     private int task;
     private boolean quit;
 
-    public MyThreadspool(){
+    public MyThreadspool() throws IOException, ClassNotFoundException {
         this(MAX_THREADS,MAX_TASKS);
     }
-    public MyThreadspool(int thread,int task) {
+    public MyThreadspool(int thread,int task) throws IOException, ClassNotFoundException {
         if(thread<=0){
             this.thread = MAX_THREADS;
         }
@@ -40,7 +42,7 @@ public class MyThreadspool {
             threads.add(workThread);
         }
     }
-    public void execute(SerializeFrameJava task){
+    public void execute(Frame task){
         try{
             taskQueue.put(task);
         } catch (InterruptedException e) {
@@ -65,18 +67,24 @@ public class MyThreadspool {
     }
 
     private class WorkThread extends Thread{
-        public WorkThread(String name){
+        public WorkThread(String name) throws IOException, ClassNotFoundException {
             super();
             setName(name);
         }
         @Override
         public void run(){
+            SerializeFrameJava serializeFrameJava = null;
+            try {
+                serializeFrameJava = new SerializeFrameJava();
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             while (!interrupted()) {
                 if(!quit){
                     try {
-                        SerializeFrameJava temp = taskQueue.take();
-                        order.put(temp);
-                        temp.serialize();
+                        Frame temp = taskQueue.take();
+                        order.put(serializeFrameJava);
+                        serializeFrameJava.serialize(temp);
                     } catch (Exception e) {
                         interrupt();
                         e.printStackTrace();

@@ -15,24 +15,23 @@ public  class  SerializeFrameJava{
     ByteArrayOutputStream baos;
     Java2DFrameConverter converter;
     BufferedImage buffer;
-    public Frame frame;
     byte[] data;
     Post post;
     boolean status;
-    public SerializeFrameJava(Frame frame) throws IOException, ClassNotFoundException {
+    public SerializeFrameJava() throws IOException, ClassNotFoundException {
         converter = new Java2DFrameConverter();
-        this.frame = frame;
         post = Post.getInstance();
         status = false;
     }
-    public void serialize() throws IOException {
+    public void serialize(Frame frame) throws IOException {
         baos = new ByteArrayOutputStream();
         buffer = converter.convert(frame);
         ImageIO.write(buffer,"png",baos);
         data = baos.toByteArray();
         status = true;
     }
-    public void send() throws IOException {
-        post.send(data);
+    public void send() throws IOException, InterruptedException {
+        post.receive(data);
+        status =false;
     }
 }

@@ -24,7 +24,6 @@ public class JavacvRecording {
 
 
     public JavacvRecording() throws IOException, ClassNotFoundException {
-        pool = new MyThreadspool();
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         captureWidth = screenSize.getWidth();
         captureHeight = screenSize.getHeight();
@@ -47,17 +46,15 @@ public class JavacvRecording {
         }
         capture();
         post = Post.getInstance();
+        pool = new MyThreadspool();
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         System.out.println("Start");
         long start = System.nanoTime();
+        post.send();
         for(int i =0 ;i<600;i++){
             frame = grabber.grab();
-            bufferFrame[i%12] = frame;
-            if(i%12==0&&i!=0){
-                post.start(bufferFrame);
-                bufferFrame = new Frame[12];
-            }
+            pool.execute(frame.clone());
         }
         long end = System.nanoTime();
         System.out.println(600/((end-start)/1_000_000_000));
