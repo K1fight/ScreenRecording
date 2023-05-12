@@ -55,13 +55,11 @@ public class JavacvRecording {
             device = ":0.0";
         }
         capture();
-        post = Post.getInstance();
-        pool = new MyThreadspool();
         status = true;
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         post = Post.getInstance();
-        pool = new MyThreadspool();
+        pool = MyThreadspool.getInstance();
         System.out.println("Start");
         long start = System.nanoTime();
         post.send();
