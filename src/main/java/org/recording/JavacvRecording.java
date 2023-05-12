@@ -52,12 +52,12 @@ public class JavacvRecording {
         System.out.println("Start");
         long start = System.nanoTime();
         post.send();
-        for(int i =0 ;i<300;i++){
+        for(int i =0 ;i<600;i++){
             frame = grabber.grab();
             pool.execute(frame.clone());
         }
         long end = System.nanoTime();
-        System.out.println(300/((end-start)/1_000_000_000));
+        System.out.println(600/((end-start)/1_000_000_000));
         grabber.stop();
         grabber.release();
         post.close();

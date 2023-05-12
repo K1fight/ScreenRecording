@@ -38,13 +38,13 @@ public class ClientUI extends JFrame {
     }
     public void display() throws IOException, ClassNotFoundException, InterruptedException {
 
-
+        get.receiveData();
         for(int i = 0;i<600;i++){
-            while (get.getEmpty());
             get.start();
             BufferedImage buffer = get.getFirst();
             p1.setBuffer(buffer);
         }
+        get.close();
     }
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         ClientUI.getInstance();

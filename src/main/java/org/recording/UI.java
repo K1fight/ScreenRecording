@@ -1,7 +1,6 @@
 package org.recording;
 
 
-import org.receving.Client;
 
 import javax.swing.*;
 import java.awt.*;
