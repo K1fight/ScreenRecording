@@ -35,9 +35,11 @@ public class Post {
         pool = new MyThreadspool();
 
     }
-    public void start(Frame frame) throws IOException, InterruptedException, ClassNotFoundException {
-            ser = new SerializeFrameJava(frame.clone());
+    public void start(Frame[] frame) throws IOException, InterruptedException, ClassNotFoundException {
+        for(Frame temp:frame){
+            ser = new SerializeFrameJava(temp.clone());
             pool.execute(ser);
+        }
     }
     public synchronized void send(byte[] data) throws IOException {
         output.writeObject(data);

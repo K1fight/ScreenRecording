@@ -53,10 +53,14 @@ public class JavacvRecording {
         long start = System.nanoTime();
         for(int i =0 ;i<600;i++){
             frame = grabber.grab();
-            post.start(frame);
+            bufferFrame[i%12] = frame;
+            if(i%12==0&&i!=0){
+                post.start(bufferFrame);
+                bufferFrame = new Frame[12];
+            }
         }
         long end = System.nanoTime();
-        System.out.println(300/((end-start)/1_000_000_000));
+        System.out.println(600/((end-start)/1_000_000_000));
         grabber.stop();
         grabber.release();
         post.close();
