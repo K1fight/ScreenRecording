@@ -6,8 +6,7 @@ import org.tools.SerializeFrameJava;;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -15,10 +14,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Post {
     static Post post;
     Thread t;
+    InetAddress address;
 
-    ServerSocket server;
-    Socket s;
-    ObjectOutputStream output;
+    DatagramSocket server;
     MyThreadspool pool;
     BlockingQueue<byte[]> buffer;
     long count,start,end;
@@ -33,12 +31,11 @@ public class Post {
     private Post() throws IOException, ClassNotFoundException {
         start = System.nanoTime();
         buffer = new LinkedBlockingQueue<>(1);
-
-        server = new ServerSocket(10200);
+        server = new DatagramSocket();
+        address = InetAddress.getByName("192.168.100.176");
         System.out.println("Start listening");
-        s = server.accept();
+
         System.out.println("receive connection");
-        output = new ObjectOutputStream(s.getOutputStream());
         pool = new MyThreadspool();
 
     }
@@ -52,8 +49,10 @@ public class Post {
             public void run(){
                 while (!interrupted()){
                     try {
-                        output.writeObject(buffer.take());
-                    } catch (IOException | InterruptedException e) {
+                        byte[] temp = buffer.take();
+                        DatagramPacket packet = new DatagramPacket(temp,temp.length,address,10200);
+                        server.send(packet);
+                    } catch (InterruptedException | IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -63,10 +62,9 @@ public class Post {
     }
     public void close() throws IOException, InterruptedException {
         end = System.nanoTime();
-        System.out.println(count/((end-start)/1_000_000_000));
+        System.out.println(count);
         while (!pool.isEmpty());
         pool.quit();
-        output.close();
         server.close();
         t.interrupt();
     }

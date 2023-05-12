@@ -6,6 +6,8 @@ import org.tools.MyThreadspool2;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
@@ -13,12 +15,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Get {
     private static Get get;
-    Socket socket;
-    ObjectInputStream objectInputStream;
-    Deserialize de;
+    DatagramSocket socket;
     LinkedList<byte[]> buffer;
     MyThreadspool2 pool;
     BlockingQueue<BufferedImage> bufferedImages;
+    byte[] bu;
 
     public static Get getInstance() throws IOException {
         if(get == null){
@@ -28,10 +29,10 @@ public class Get {
         return get;
     }
     private Get() throws IOException{
+        bu = new byte[2048];
         pool = new MyThreadspool2();
         System.out.println("start connecting");
-        socket = new Socket("192.168.100.112",10200);
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
+        socket = new DatagramSocket(10200);
         buffer = new LinkedList<>();
         bufferedImages = new LinkedBlockingQueue<>();
     }
@@ -48,11 +49,11 @@ public class Get {
 
     }
     public void close() throws IOException {
-        objectInputStream.close();
         socket.close();
     }
     public boolean getEmpty() throws IOException, ClassNotFoundException {
-        buffer.add((byte[])objectInputStream.readObject());
+        DatagramPacket packet = new DatagramPacket(bu,bu.length);
+        socket.receive(packet);
         return buffer.isEmpty();
     }
 
