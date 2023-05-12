@@ -30,7 +30,7 @@ public class Deserialize{
         buffer = ImageIO.read(bais);
         status = true;
     }
-    public synchronized void send(){
+    public void send(){
         get.receive(buffer);
     }
 

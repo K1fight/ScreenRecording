@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Get {
     private static Get get;
@@ -16,7 +18,7 @@ public class Get {
     Deserialize de;
     LinkedList<byte[]> buffer;
     MyThreadspool2 pool;
-    LinkedList<BufferedImage> bufferedImages;
+    BlockingQueue<BufferedImage> bufferedImages;
 
     public static Get getInstance() throws IOException {
         if(get == null){
@@ -31,20 +33,18 @@ public class Get {
         socket = new Socket("192.168.100.112",9999);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         buffer = new LinkedList<>();
-        bufferedImages = new LinkedList<>();
+        bufferedImages = new LinkedBlockingQueue<>();
     }
 
     public void start() throws IOException, ClassNotFoundException {
-        System.out.println("2");
         pool.execute(new Deserialize(buffer.getFirst()));
         buffer.removeFirst();
     }
-    public void receive(BufferedImage image){
-        System.out.println("1");
+    public synchronized void receive(BufferedImage image){
         bufferedImages.add(image);
     }
-    public BufferedImage getFirst(){
-        return this.bufferedImages.getFirst();
+    public BufferedImage getFirst() throws InterruptedException {
+        return bufferedImages.take();
 
     }
     public void close() throws IOException {
@@ -54,9 +54,6 @@ public class Get {
     public boolean getEmpty() throws IOException, ClassNotFoundException {
         buffer.add((byte[])objectInputStream.readObject());
         return buffer.isEmpty();
-    }
-    public boolean getEmptyImg(){
-        return bufferedImages.isEmpty();
     }
 
 }

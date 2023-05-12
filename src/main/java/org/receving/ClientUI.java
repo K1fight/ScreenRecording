@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class ClientUI extends JFrame {
     private static ClientUI ui;
-    public static ClientUI getInstance() throws IOException, ClassNotFoundException {
+    public static ClientUI getInstance() throws IOException, ClassNotFoundException, InterruptedException {
         if(ui==null){
             ui = new ClientUI();
             return ui;
@@ -18,7 +18,7 @@ public class ClientUI extends JFrame {
     }
     ImagePanel p1;
     Get get;
-    public ClientUI() throws IOException, ClassNotFoundException {
+    public ClientUI() throws IOException, ClassNotFoundException, InterruptedException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1280,720);
         setLayout(new FlowLayout());
@@ -36,19 +36,17 @@ public class ClientUI extends JFrame {
         display();
 
     }
-    public void display() throws IOException, ClassNotFoundException {
+    public void display() throws IOException, ClassNotFoundException, InterruptedException {
 
 
-        add(p1);
         for(int i = 0;i<600;i++){
             while (get.getEmpty());
             get.start();
-            while (get.getEmptyImg());
             BufferedImage buffer = get.getFirst();
-//            p1.setBuffer(buffer);
+            p1.setBuffer(buffer);
         }
     }
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         ClientUI.getInstance();
     }
 }
