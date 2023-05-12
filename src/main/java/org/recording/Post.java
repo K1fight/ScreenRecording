@@ -21,6 +21,7 @@ public class Post {
     ObjectOutputStream output;
     MyThreadspool pool;
     BlockingQueue<byte[]> buffer;
+    long count,start,end;
     public static Post getInstance() throws IOException, ClassNotFoundException {
         if(post==null){
             post = new Post();
@@ -30,6 +31,7 @@ public class Post {
     }
 
     private Post() throws IOException, ClassNotFoundException {
+        start = System.nanoTime();
         buffer = new LinkedBlockingQueue<>(1);
 
         server = new ServerSocket(10200);
@@ -40,15 +42,9 @@ public class Post {
         pool = new MyThreadspool();
 
     }
-//    public void start(Frame[] frame) throws IOException, InterruptedException, ClassNotFoundException {
-//        for(Frame temp:frame){
-//            ser = new SerializeFrameJava(temp.clone());
-//            pool.execute(ser);
-//        }
-//    }
     public synchronized void receive(byte[] data) throws InterruptedException {
         buffer.put(data);
-//        output.writeObject(data);
+        count++;
     }
     public void send(){
         t = new Thread("1"){
@@ -66,6 +62,8 @@ public class Post {
         t.start();
     }
     public void close() throws IOException, InterruptedException {
+        end = System.nanoTime();
+        System.out.println(count/((end-start)/1_000_000_000));
         while (!pool.isEmpty());
         pool.quit();
         output.close();
