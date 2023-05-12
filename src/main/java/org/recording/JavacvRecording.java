@@ -46,7 +46,7 @@ public class JavacvRecording {
         }
         capture();
         post = Post.getInstance();
-        pool = new MyThreadspool();
+        pool = MyThreadspool.getInstance();
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         System.out.println("Start");

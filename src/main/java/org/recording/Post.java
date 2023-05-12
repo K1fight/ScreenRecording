@@ -39,7 +39,7 @@ public class Post {
         s = server.accept();
         System.out.println("receive connection");
         output = new ObjectOutputStream(s.getOutputStream());
-        pool = new MyThreadspool();
+        pool = MyThreadspool.getInstance();
 
     }
     public synchronized void receive(byte[] data) throws InterruptedException {
