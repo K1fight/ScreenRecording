@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 
 public class TestServer {
     public static void main(String[]args) throws IOException, ClassNotFoundException, InterruptedException {
-       JavacvRecording recording = new JavacvRecording();
+       JavacvRecording recording = JavacvRecording.getInstance();
        recording.start();
 
     }

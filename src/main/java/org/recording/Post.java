@@ -45,14 +45,19 @@ public class Post {
     public synchronized void receive(byte[] data) throws InterruptedException {
         buffer.put(data);
         count++;
+        System.out.println("receive:" +count);
     }
     public void send(){
         t = new Thread("1"){
             @Override
             public void run(){
+                int counter = 0;
                 while (!interrupted()){
                     try {
+
+                        System.out.println("send:" +counter);
                         output.writeObject(buffer.take());
+                        counter++;
                     } catch (IOException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -62,8 +67,6 @@ public class Post {
         t.start();
     }
     public void close() throws IOException, InterruptedException {
-        end = System.nanoTime();
-        System.out.println(count/((end-start)/1_000_000_000));
         while (!pool.isEmpty());
         pool.quit();
         output.close();

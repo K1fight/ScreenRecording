@@ -11,6 +11,7 @@ import java.io.IOException;
 
 
 public class JavacvRecording {
+    private static JavacvRecording recording;
     Post post;
     double captureWidth,captureHeight;
     int x,y;
@@ -21,9 +22,18 @@ public class JavacvRecording {
     Frame[] bufferFrame;
     SerializeFrameJava ser;
     MyThreadspool pool;
+    boolean status;
+
+    public static JavacvRecording getInstance() throws IOException, ClassNotFoundException {
+        if(recording == null){
+            recording = new JavacvRecording();
+            return  recording;
+        }
+        return recording;
+    }
 
 
-    public JavacvRecording() throws IOException, ClassNotFoundException {
+    private JavacvRecording() throws IOException, ClassNotFoundException {
         screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         captureWidth = screenSize.getWidth();
         captureHeight = screenSize.getHeight();
@@ -47,23 +57,29 @@ public class JavacvRecording {
         capture();
         post = Post.getInstance();
         pool = new MyThreadspool();
+        status = true;
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
+        post = Post.getInstance();
+        pool = new MyThreadspool();
         System.out.println("Start");
         long start = System.nanoTime();
         post.send();
-        for(int i =0 ;i<300;i++){
+        while(status){
             frame = grabber.grab();
             pool.execute(frame.clone());
         }
         long end = System.nanoTime();
         System.out.println(300/((end-start)/1_000_000_000));
+    }
+    public void stop(){
+        status = false;
+    }
+    public void exit() throws IOException, InterruptedException {
         grabber.stop();
         grabber.release();
         post.close();
         System.out.println("Finish");
-
-
     }
     private void capture() throws FFmpegFrameGrabber.Exception {
         grabber = new FFmpegFrameGrabber(device);
@@ -71,9 +87,8 @@ public class JavacvRecording {
         grabber.setFormat(format);
         grabber.setImageHeight((int)captureHeight);
         grabber.setImageWidth((int)captureWidth);
-        grabber.setFrameRate(60);
+        grabber.setFrameRate(30);
         grabber.start();
-
     }
 
 }
