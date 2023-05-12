@@ -19,10 +19,10 @@ public class MyThreadspool {
     private int task;
     private boolean quit;
 
-    public MyThreadspool() throws IOException, ClassNotFoundException {
+    public MyThreadspool(){
         this(MAX_THREADS,MAX_TASKS);
     }
-    public MyThreadspool(int thread,int task) throws IOException, ClassNotFoundException {
+    public MyThreadspool(int thread,int task) {
         if(thread<=0){
             this.thread = MAX_THREADS;
         }
@@ -57,17 +57,18 @@ public class MyThreadspool {
         threads.clear();
     }
     public boolean isEmpty(){
-        return taskQueue.isEmpty();
+        return taskQueue.isEmpty()&& order.isEmpty();
+
     }
-    public void quit() throws InterruptedException {
+    public void quit(){
         this.quit = true;
-        Thread.sleep(5000);
         destory();
 
     }
 
     private class WorkThread extends Thread{
-        public WorkThread(String name) throws IOException, ClassNotFoundException {
+        private boolean status;
+        public WorkThread(String name)  {
             super();
             setName(name);
         }
@@ -82,10 +83,13 @@ public class MyThreadspool {
             while (!interrupted()) {
                 if(!quit){
                     try {
+                        status = true;
                         Frame temp = taskQueue.take();
+                        status = false;
+
                         order.put(serializeFrameJava);
                         serializeFrameJava.serialize(temp);
-                    } catch (Exception e) {
+                    } catch (InterruptedException | IOException e) {
                         interrupt();
                         e.printStackTrace();
                     }
@@ -95,10 +99,12 @@ public class MyThreadspool {
             }
         }
         public void stopWorker(){
+            while (!status);
             interrupt();
         }
     }
     private class DaemenThread extends Thread{
+
         public DaemenThread(String name){
             super();
             setName(name);

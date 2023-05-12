@@ -32,7 +32,7 @@ public class Post {
 
     private Post() throws IOException, ClassNotFoundException {
         start = System.nanoTime();
-        buffer = new LinkedBlockingQueue<>(1);
+        buffer = new LinkedBlockingQueue<>();
 
         server = new ServerSocket(10200);
         System.out.println("Start listening");
@@ -45,6 +45,7 @@ public class Post {
     public synchronized void receive(byte[] data) throws InterruptedException {
         buffer.put(data);
         count++;
+        System.out.println(count);
     }
     public void send(){
         t = new Thread("1"){
@@ -63,8 +64,8 @@ public class Post {
     }
     public void close() throws IOException, InterruptedException {
         end = System.nanoTime();
-        System.out.println(count/((end-start)/1_000_000_000));
         while (!pool.isEmpty());
+        while (!buffer.isEmpty());
         pool.quit();
         output.close();
         server.close();

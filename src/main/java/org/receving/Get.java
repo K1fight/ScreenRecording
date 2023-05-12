@@ -32,7 +32,7 @@ public class Get {
 
         pool = new MyThreadspool2(8,100);
         System.out.println("start connecting");
-        socket = new Socket("192.168.100.112",10200);
+        socket = new Socket("127.0.0.1",10200);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         buffer = new LinkedBlockingQueue<>();
         bufferedImages = new LinkedBlockingQueue<>();
