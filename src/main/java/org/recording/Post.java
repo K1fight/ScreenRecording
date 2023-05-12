@@ -51,7 +51,7 @@ public class Post {
 //        System.out.println("receive:" +count);
     }
     public void setFramesBuffer(Frame frame) throws InterruptedException {
-        System.out.println(framesBuffer.size());
+        System.out.println(buffer.size());
         framesBuffer.put(frame.clone());
     }
     public void putFrame(){
@@ -77,9 +77,7 @@ public class Post {
                 while (!interrupted()){
                     try {
 
-//                        System.out.println("send:" +counter);
                         output.writeObject(buffer.take());
-                        counter++;
                     } catch (IOException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }

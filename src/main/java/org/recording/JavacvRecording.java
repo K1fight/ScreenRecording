@@ -1,5 +1,6 @@
 package org.recording;
 
+import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
 import org.tools.MyThreadspool;
@@ -56,15 +57,12 @@ public class JavacvRecording {
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         post = Post.getInstance();
         System.out.println("Start");
-        long start = System.nanoTime();
         post.send();
         post.putFrame();
         while(status){
             frame = grabber.grab();
             post.setFramesBuffer(frame);
         }
-        long end = System.nanoTime();
-        System.out.println(300/((end-start)/1_000_000_000));
     }
     public void stop(){
         status = false;
@@ -78,6 +76,7 @@ public class JavacvRecording {
     private void capture() throws FFmpegFrameGrabber.Exception {
         grabber = new FFmpegFrameGrabber(device);
         grabber.setOption(option,"1");
+        grabber.setPixelFormat(avutil.AV_PIX_FMT_NV12);
         grabber.setFormat(format);
         grabber.setImageHeight((int)captureHeight);
         grabber.setImageWidth((int)captureWidth);
