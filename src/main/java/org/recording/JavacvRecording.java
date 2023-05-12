@@ -19,9 +19,6 @@ public class JavacvRecording {
     Rectangle screenSize;
     FFmpegFrameGrabber grabber;
     Frame frame;
-    Frame[] bufferFrame;
-    SerializeFrameJava ser;
-    MyThreadspool pool;
     boolean status;
 
     public static JavacvRecording getInstance() throws IOException, ClassNotFoundException {
@@ -39,7 +36,6 @@ public class JavacvRecording {
         captureHeight = screenSize.getHeight();
         x = 0;
         y = 0;
-        bufferFrame = new Frame[12];
         osName = System.getProperty("os.name").toLowerCase();
         if (osName.startsWith("windows")) {
             format = "gdigrab";
@@ -59,13 +55,13 @@ public class JavacvRecording {
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         post = Post.getInstance();
-        pool = MyThreadspool.getInstance();
         System.out.println("Start");
         long start = System.nanoTime();
         post.send();
+        post.putFrame();
         while(status){
             frame = grabber.grab();
-            pool.execute(frame.clone());
+            post.setFramesBuffer(frame);
         }
         long end = System.nanoTime();
         System.out.println(300/((end-start)/1_000_000_000));
