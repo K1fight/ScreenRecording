@@ -33,7 +33,6 @@ public  class  SerializeFrameJava{
         status = true;
     }
     public void send() throws IOException {
-        System.out.println("1");
         post.send(data);
     }
 }

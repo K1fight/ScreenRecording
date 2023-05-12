@@ -33,7 +33,7 @@ public class JavacvRecording {
         bufferFrame = new Frame[12];
         osName = System.getProperty("os.name").toLowerCase();
         if (osName.startsWith("windows")) {
-            format = "gdigrab";
+            format = "dshow";
             option = "desktop";
             device = "desktop";
         } else if (osName.startsWith("mac")) {
