@@ -67,6 +67,8 @@ public class Post {
         t.start();
     }
     public void close() throws IOException, InterruptedException {
+        end = System.nanoTime();
+        System.out.println(count/((end-start)/1_000_000_000));
         while (!pool.isEmpty());
         pool.quit();
         output.close();

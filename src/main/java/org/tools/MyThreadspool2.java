@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MyThreadspool2 {
+    private static MyThreadspool2 pool;
     private static final int MAX_THREADS = 24;
     private static final int MAX_TASKS = 600;
     private final BlockingQueue<Deserialize> taskQueue;
@@ -16,11 +17,25 @@ public class MyThreadspool2 {
     private int thread;
     private int task;
     private boolean quit;
+    public static MyThreadspool2 getInstance(int thread,int tasks){
+        if(pool==null){
+            pool = new MyThreadspool2(thread,tasks);
+            return pool;
+        }
+        return pool;
+    }
+    public static MyThreadspool2 getInstance(){
+        if(pool==null){
+            pool = new MyThreadspool2();
+            return pool;
+        }
+        return pool;
+    }
 
-    public MyThreadspool2(){
+    private MyThreadspool2(){
         this(MAX_THREADS,MAX_TASKS);
     }
-    public MyThreadspool2(int thread,int task) {
+    private MyThreadspool2(int thread,int task) {
         if(thread<=0){
             this.thread = MAX_THREADS;
         }

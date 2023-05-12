@@ -10,30 +10,41 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MyThreadspool {
+    private static MyThreadspool pool;
     private static final int MAX_THREADS = 12;
     private static final int MAX_TASKS = 300;
     private final BlockingQueue<Frame> taskQueue;
     private final Set<WorkThread> threads;
     private final BlockingQueue<SerializeFrameJava> order;
-    private int thread;
-    private int task;
     private boolean quit;
 
-    public MyThreadspool() throws IOException, ClassNotFoundException {
+    public static MyThreadspool getInstance(int thread,int tasks){
+        if(pool==null){
+            pool = new MyThreadspool(thread,tasks);
+            return pool;
+        }
+        return pool;
+    }
+    public static MyThreadspool getInstance(){
+        if(pool==null){
+            pool = new MyThreadspool();
+            return pool;
+        }
+        return pool;
+    }
+    private MyThreadspool(){
         this(MAX_THREADS,MAX_TASKS);
     }
-    public MyThreadspool(int thread,int task) throws IOException, ClassNotFoundException {
+    private MyThreadspool(int thread,int task) {
         if(thread<=0){
-            this.thread = MAX_THREADS;
+            thread = MAX_THREADS;
         }
         if(task<=0){
-            this.task = MAX_TASKS;
+            task = MAX_TASKS;
         }
         this.taskQueue = new LinkedBlockingQueue<>(task);
         this.order = new LinkedBlockingQueue<>(24);
         threads = new HashSet<>();
-        this.task = task;
-        this.thread = thread;
         DaemenThread daemen = new DaemenThread("daemen-1");
         daemen.start();
         for(int i = 0;i<thread;i++){
@@ -57,17 +68,18 @@ public class MyThreadspool {
         threads.clear();
     }
     public boolean isEmpty(){
-        return taskQueue.isEmpty();
+        return taskQueue.isEmpty()&& order.isEmpty();
+
     }
-    public void quit() throws InterruptedException {
+    public void quit(){
         this.quit = true;
-        Thread.sleep(5000);
         destory();
 
     }
 
     private class WorkThread extends Thread{
-        public WorkThread(String name) throws IOException, ClassNotFoundException {
+        private boolean status;
+        public WorkThread(String name)  {
             super();
             setName(name);
         }
@@ -82,10 +94,13 @@ public class MyThreadspool {
             while (!interrupted()) {
                 if(!quit){
                     try {
+                        status = true;
                         Frame temp = taskQueue.take();
+                        status = false;
+
                         order.put(serializeFrameJava);
                         serializeFrameJava.serialize(temp);
-                    } catch (Exception e) {
+                    } catch (InterruptedException | IOException e) {
                         interrupt();
                         e.printStackTrace();
                     }
@@ -95,10 +110,12 @@ public class MyThreadspool {
             }
         }
         public void stopWorker(){
+            while (!status);
             interrupt();
         }
     }
     private class DaemenThread extends Thread{
+
         public DaemenThread(String name){
             super();
             setName(name);
