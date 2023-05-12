@@ -40,9 +40,7 @@ public class Post {
             pool.execute(ser);
     }
     public synchronized void send(byte[] data) throws IOException {
-//        System.out.println(data.length);
         output.writeObject(data);
-//        output.flush();
     }
     public void close() throws IOException, InterruptedException {
         while (!pool.isEmpty());

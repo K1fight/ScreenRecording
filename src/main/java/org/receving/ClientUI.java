@@ -42,7 +42,7 @@ public class ClientUI extends JFrame {
         add(p1);
         for(int i = 0;i<600;i++){
             while (get.getEmpty());
-            BufferedImage buffer = get.get();
+            BufferedImage buffer = get.getFirst();
             buffer.getWidth();
             p1.setBuffer(buffer);
 

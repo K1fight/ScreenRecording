@@ -1,6 +1,5 @@
 package org.recording;
 
-import javafx.geometry.Pos;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
 import org.tools.MyThreadspool;

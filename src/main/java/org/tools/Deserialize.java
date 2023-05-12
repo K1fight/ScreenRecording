@@ -2,6 +2,7 @@ package org.tools;
 
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.receving.Get;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,14 +16,22 @@ public class Deserialize{
     Frame frame;
     BufferedImage buffer;
     ByteArrayInputStream bais;
+    Get get;
     byte[] data;
-    public Deserialize(){
+    boolean status;
+    public Deserialize(byte[] data) throws IOException {
         converter = new Java2DFrameConverter();
+        this.data = data;
+        status = false;
+        get = Get.getInstance();
     }
-    public BufferedImage deSerialize(byte[] data) throws IOException {
+    public void deSerialize() throws IOException {
         bais = new ByteArrayInputStream(data);
         buffer = ImageIO.read(bais);
-        return buffer;
+        status = true;
+    }
+    public synchronized void send(){
+        get.receive(buffer);
     }
 
 
