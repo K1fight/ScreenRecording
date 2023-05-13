@@ -56,6 +56,7 @@ public class JavacvRecording {
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         post = Post.getInstance();
+        post.startPool();
         System.out.println("Start");
         post.send();
         post.putFrame();
@@ -76,12 +77,14 @@ public class JavacvRecording {
     private void capture() throws FFmpegFrameGrabber.Exception {
         grabber = new FFmpegFrameGrabber(device);
         grabber.setOption(option,"1");
-        grabber.setPixelFormat(avutil.AV_PIX_FMT_NV12);
         grabber.setFormat(format);
         grabber.setImageHeight((int)captureHeight);
         grabber.setImageWidth((int)captureWidth);
-        grabber.setFrameRate(30);
+        grabber.setFrameRate(60);
         grabber.start();
+    }
+    public static void closeRecording(){
+        recording = null;
     }
 
 }

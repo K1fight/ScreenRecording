@@ -18,24 +18,24 @@ public class MyThreadspool {
     private final BlockingQueue<SerializeFrameJava> order;
     private boolean quit;
 
-    public static MyThreadspool getInstance(int thread,int tasks){
+    public static MyThreadspool getInstance(int thread,int tasks) throws IOException, ClassNotFoundException {
         if(pool==null){
             pool = new MyThreadspool(thread,tasks);
             return pool;
         }
         return pool;
     }
-    public static MyThreadspool getInstance(){
+    public static MyThreadspool getInstance() throws IOException, ClassNotFoundException {
         if(pool==null){
             pool = new MyThreadspool();
             return pool;
         }
         return pool;
     }
-    private MyThreadspool(){
+    private MyThreadspool() throws IOException, ClassNotFoundException {
         this(MAX_THREADS,MAX_TASKS);
     }
-    private MyThreadspool(int thread,int task) {
+    private MyThreadspool(int thread,int task) throws IOException, ClassNotFoundException {
         if(thread<=0){
             thread = MAX_THREADS;
         }
@@ -78,19 +78,15 @@ public class MyThreadspool {
     }
 
     private class WorkThread extends Thread{
+        SerializeFrameJava serializeFrameJava;
         private boolean status;
-        public WorkThread(String name)  {
+        public WorkThread(String name) throws IOException, ClassNotFoundException {
             super();
+            serializeFrameJava= new SerializeFrameJava();
             setName(name);
         }
         @Override
         public void run(){
-            SerializeFrameJava serializeFrameJava = null;
-            try {
-                serializeFrameJava = new SerializeFrameJava();
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
             while (!interrupted()) {
                 if(!quit){
                     try {

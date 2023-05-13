@@ -54,6 +54,7 @@ public class UI extends JFrame {
                     @Override
                     public void run(){
                         javaCV.stop();
+                        JavacvRecording.closeRecording();
                     }
                 };
                 t2.start();

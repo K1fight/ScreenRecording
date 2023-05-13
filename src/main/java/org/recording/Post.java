@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -31,27 +32,27 @@ public class Post {
         return post;
     }
 
-    private Post() throws IOException, ClassNotFoundException {
+    private Post() throws IOException {
         start = System.nanoTime();
         buffer = new LinkedBlockingQueue<>();
         framesBuffer = new LinkedBlockingQueue<>();
         server = new ServerSocket(10200);
         System.out.println("Start listening");
         s = server.accept();
-        s.setSendBufferSize(2000*1024);
+        s.setSendBufferSize(2500*1024);
         System.out.println("receive connection");
         output = new ObjectOutputStream(s.getOutputStream());
-        pool = MyThreadspool.getInstance();
 
+    }
+    public void startPool() throws IOException, ClassNotFoundException {
+        pool = MyThreadspool.getInstance(3,100);
     }
     public synchronized void receive(byte[] data) throws InterruptedException {
 //        System.out.println(data.length);
         buffer.put(data);
-        count++;
 //        System.out.println("receive:" +count);
     }
     public void setFramesBuffer(Frame frame) throws InterruptedException {
-        System.out.println(buffer.size());
         framesBuffer.put(frame.clone());
     }
     public void putFrame(){
@@ -73,13 +74,19 @@ public class Post {
         t = new Thread("1"){
             @Override
             public void run(){
+                try {
+                    s.setSoTimeout(10000);
+                } catch (SocketException e) {
+                    throw new RuntimeException(e);
+                }
                 int counter = 0;
                 while (!interrupted()){
                     try {
 
-                        output.writeObject(buffer.take());
+                                byte[] temp = buffer.take();
+                                output.writeObject(temp);
                     } catch (IOException | InterruptedException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }
             }

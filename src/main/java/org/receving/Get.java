@@ -30,10 +30,10 @@ public class Get {
     }
     private Get() throws IOException{
 
-        pool = MyThreadspool2.getInstance();
+        pool = MyThreadspool2.getInstance(9,200);
         System.out.println("start connecting");
         socket = new Socket("192.168.100.112",10200);
-        socket.setReceiveBufferSize(1024*1024);
+        socket.setReceiveBufferSize(2500*1024);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         buffer = new LinkedBlockingQueue<>();
         bufferedImages = new LinkedBlockingQueue<>();
@@ -59,7 +59,6 @@ public class Get {
         bufferedImages.put(image);
     }
     public BufferedImage getFirst() throws InterruptedException {
-        System.out.println(bufferedImages.size());
         return bufferedImages.take();
 
     }
