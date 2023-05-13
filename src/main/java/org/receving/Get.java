@@ -29,14 +29,15 @@ public class Get {
         return get;
     }
     private Get() throws IOException{
-
-        pool = MyThreadspool2.getInstance(9,200);
         System.out.println("start connecting");
         socket = new Socket("192.168.100.112",10200);
         socket.setReceiveBufferSize(2500*1024);
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         buffer = new LinkedBlockingQueue<>();
         bufferedImages = new LinkedBlockingQueue<>();
+    }
+    public void startGetPool() throws IOException {
+        pool = MyThreadspool2.getInstance(9,200);
     }
 
     public void start() throws IOException, ClassNotFoundException, InterruptedException {
@@ -45,8 +46,8 @@ public class Get {
             public void run(){
                 while(!interrupted()){
                     try {
-                        pool.execute(new Deserialize(buffer.take()));
-                    } catch (IOException | InterruptedException e) {
+                        pool.execute(buffer.take());
+                    } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -78,7 +79,13 @@ public class Get {
                     try {
                         buffer.put((byte[])objectInputStream.readObject());
                     } catch (IOException | ClassNotFoundException | InterruptedException e) {
-                        throw new RuntimeException(e);
+                        try {
+                            Thread.sleep(10);
+                            get = null;
+                            get = Get.getInstance();
+                        } catch (IOException | InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }

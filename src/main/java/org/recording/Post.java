@@ -37,8 +37,10 @@ public class Post {
         buffer = new LinkedBlockingQueue<>();
         framesBuffer = new LinkedBlockingQueue<>();
         server = new ServerSocket(10200);
+        server.setSoTimeout(10000000);
         System.out.println("Start listening");
         s = server.accept();
+        s.setSoTimeout(10000000);
         s.setSendBufferSize(2500*1024);
         System.out.println("receive connection");
         output = new ObjectOutputStream(s.getOutputStream());
@@ -82,11 +84,15 @@ public class Post {
                 int counter = 0;
                 while (!interrupted()){
                     try {
-
-                                byte[] temp = buffer.take();
-                                output.writeObject(temp);
+                        byte[] temp = buffer.take();
+                        output.writeObject(temp);
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        try {
+                            post = null;
+                            post = Post.getInstance();
+                        } catch (IOException | ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }

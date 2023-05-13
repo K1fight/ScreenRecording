@@ -13,19 +13,17 @@ import java.io.IOException;
 
 public class Deserialize{
     Java2DFrameConverter converter;
-    Frame frame;
     BufferedImage buffer;
     ByteArrayInputStream bais;
     Get get;
     byte[] data;
     boolean status;
-    public Deserialize(byte[] data) throws IOException {
+    public Deserialize() throws IOException {
         converter = new Java2DFrameConverter();
-        this.data = data;
         status = false;
         get = Get.getInstance();
     }
-    public void deSerialize() throws IOException {
+    public void deSerialize(byte[] data) throws IOException {
         bais = new ByteArrayInputStream(data);
         buffer = ImageIO.read(bais);
         status = true;

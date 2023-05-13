@@ -30,6 +30,7 @@ public class ClientUI extends JFrame {
 
 
         get = Get.getInstance();
+        get.startGetPool();
         add(p1);
         pack();
         setVisible(true);

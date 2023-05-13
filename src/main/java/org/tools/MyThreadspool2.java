@@ -11,20 +11,20 @@ public class MyThreadspool2 {
     private static MyThreadspool2 pool;
     private static final int MAX_THREADS = 24;
     private static final int MAX_TASKS = 600;
-    private final BlockingQueue<Deserialize> taskQueue;
+    private final BlockingQueue<byte[]> taskQueue;
     private final Set<WorkThread> threads;
     private final BlockingQueue<Deserialize> order;
     private int thread;
     private int task;
     private boolean quit;
-    public static MyThreadspool2 getInstance(int thread,int tasks){
+    public static MyThreadspool2 getInstance(int thread,int tasks) throws IOException {
         if(pool==null){
             pool = new MyThreadspool2(thread,tasks);
             return pool;
         }
         return pool;
     }
-    public static MyThreadspool2 getInstance(){
+    public static MyThreadspool2 getInstance() throws IOException {
         if(pool==null){
             pool = new MyThreadspool2();
             return pool;
@@ -32,10 +32,10 @@ public class MyThreadspool2 {
         return pool;
     }
 
-    private MyThreadspool2(){
+    private MyThreadspool2() throws IOException {
         this(MAX_THREADS,MAX_TASKS);
     }
-    private MyThreadspool2(int thread,int task) {
+    private MyThreadspool2(int thread,int task) throws IOException {
         if(thread<=0){
             this.thread = MAX_THREADS;
         }
@@ -55,7 +55,7 @@ public class MyThreadspool2 {
             threads.add(workThread);
         }
     }
-    public void execute(Deserialize task){
+    public void execute(byte[] task){
         try{
             taskQueue.put(task);
         } catch (InterruptedException e) {
@@ -80,8 +80,10 @@ public class MyThreadspool2 {
     }
 
     private class WorkThread extends Thread{
-        public WorkThread(String name){
+        Deserialize deserialize;
+        public WorkThread(String name) throws IOException {
             super();
+            deserialize = new Deserialize();
             setName(name);
         }
         @Override
@@ -89,9 +91,9 @@ public class MyThreadspool2 {
             while (!interrupted()) {
                 if(!quit){
                     try {
-                        Deserialize temp = taskQueue.take();
-                        order.put(temp);
-                        temp.deSerialize();
+                        byte[] temp = taskQueue.take();
+                        order.put(deserialize);
+                        deserialize.deSerialize(temp);
                     } catch (Exception e) {
                         interrupt();
                         e.printStackTrace();
