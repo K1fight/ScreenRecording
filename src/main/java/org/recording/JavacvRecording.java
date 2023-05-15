@@ -3,8 +3,8 @@ package org.recording;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
-import org.tools.MyThreadspool;
-import org.tools.SerializeFrameJava;
+import org.transmission.Post;
+import org.transmission.PostBuffer;
 
 
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class JavacvRecording {
     private static JavacvRecording recording;
-    Post post;
+    PostBuffer pb;
     double captureWidth,captureHeight;
     int x,y;
     String option,format,device,osName;
@@ -52,17 +52,15 @@ public class JavacvRecording {
             device = ":0.0";
         }
         capture();
+        pb = PostBuffer.getInstance();
         status = true;
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
         post = Post.getInstance();
         post.startPool();
         System.out.println("Start");
-        post.send();
-        post.putFrame();
         while(status){
             frame = grabber.grab();
-            post.setFramesBuffer(frame);
         }
     }
     public void stop(){
@@ -71,7 +69,7 @@ public class JavacvRecording {
     public void exit() throws IOException, InterruptedException {
         grabber.stop();
         grabber.release();
-        post.close();
+        pb.close();
         System.out.println("Finish");
     }
     private void capture() throws FFmpegFrameGrabber.Exception {

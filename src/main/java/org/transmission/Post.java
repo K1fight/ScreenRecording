@@ -1,4 +1,4 @@
-package org.recording;
+package org.transmission;
 
 import org.bytedeco.javacv.Frame;
 import org.tools.MyThreadspool;
@@ -15,15 +15,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Post {
     static Post post;
-    Thread t,t1;
+    Thread t;
 
     ServerSocket server;
     Socket s;
     ObjectOutputStream output;
-    MyThreadspool pool;
-    BlockingQueue<byte[]> buffer;
-    BlockingQueue<Frame> framesBuffer;
-    long count,start,end;
     public static Post getInstance() throws IOException, ClassNotFoundException {
         if(post==null){
             post = new Post();

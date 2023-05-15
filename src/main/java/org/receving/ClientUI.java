@@ -1,10 +1,10 @@
 package org.receving;
 
-import javax.imageio.ImageIO;
+import org.transmission.Get;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class ClientUI extends JFrame {

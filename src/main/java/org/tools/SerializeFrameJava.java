@@ -2,8 +2,8 @@ package org.tools;
 
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import org.recording.Post;
-import org.recording.UI;
+import org.transmission.Post;
+import org.transmission.PostBuffer;
 
 
 import javax.imageio.ImageIO;
@@ -16,11 +16,11 @@ public  class  SerializeFrameJava{
     Java2DFrameConverter converter;
     BufferedImage buffer;
     byte[] data;
-    Post post;
+    PostBuffer postBuffer;
     boolean status;
     public SerializeFrameJava() throws IOException, ClassNotFoundException {
         converter = new Java2DFrameConverter();
-        post = Post.getInstance();
+        postBuffer = PostBuffer.getInstance();
         status = false;
     }
     public void serialize(Frame frame) throws IOException {
@@ -31,7 +31,7 @@ public  class  SerializeFrameJava{
         status = true;
     }
     public void send() throws IOException, InterruptedException {
-        post.receive(data);
+        postBuffer.setSendData(data);
         status =false;
     }
 }
