@@ -56,11 +56,11 @@ public class JavacvRecording {
         status = true;
     }
     public void start() throws IOException, InterruptedException, ClassNotFoundException {
-        post = Post.getInstance();
-        post.startPool();
         System.out.println("Start");
+        pb.startMutiThread();
         while(status){
             frame = grabber.grab();
+            pb.setData(frame);
         }
     }
     public void stop(){

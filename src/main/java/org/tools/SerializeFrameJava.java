@@ -26,7 +26,7 @@ public  class  SerializeFrameJava{
     public void serialize(Frame frame) throws IOException {
         baos = new ByteArrayOutputStream();
         buffer = converter.convert(frame);
-        ImageIO.write(buffer,"png",baos);
+        ImageIO.write(buffer,"jpg",baos);
         data = baos.toByteArray();
         status = true;
     }

@@ -1,6 +1,7 @@
 package org.receving;
 
-import org.transmission.Get;
+
+import org.transmission.GetBuffer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +18,8 @@ public class ClientUI extends JFrame {
         return ui;
     }
     ImagePanel p1;
-    Get get;
-    public ClientUI() throws IOException, ClassNotFoundException, InterruptedException {
+    GetBuffer gb;
+    private ClientUI() throws IOException, ClassNotFoundException, InterruptedException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1280,720);
         setLayout(new FlowLayout());
@@ -28,24 +29,20 @@ public class ClientUI extends JFrame {
         p1.setPreferredSize(new Dimension(1280,720));
         p1.setVisible(true);
 
-
-        get = Get.getInstance();
-        get.startGetPool();
+        gb = GetBuffer.getInstance();
         add(p1);
         pack();
         setVisible(true);
         display();
 
     }
-    public void display() throws IOException, ClassNotFoundException, InterruptedException {
+    public void display() throws IOException, InterruptedException {
+        gb.startMutithreads();
 
-        get.receiveData();
-        get.start();
         for(int i = 0;i<600;i++){
-            BufferedImage buffer = get.getFirst();
-            p1.setBuffer(buffer);
+            p1.setBuffer(gb.getData());
         }
-        get.close();
+        gb.close();
     }
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         ClientUI.getInstance();

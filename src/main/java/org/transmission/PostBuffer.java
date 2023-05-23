@@ -4,10 +4,12 @@ import org.bytedeco.javacv.Frame;
 import org.tools.MyThreadspool;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class PostBuffer {
+public class PostBuffer extends TimerTask {
     private static PostBuffer ts;
     Thread t1,t2;
     MyThreadspool pool;
@@ -23,36 +25,53 @@ public class PostBuffer {
     }
     private PostBuffer() throws IOException, ClassNotFoundException {
         task = new LinkedBlockingQueue<>();
+        sendData = new LinkedBlockingQueue<>();
         post = Post.getInstance();
     }
+
+    @Override
+    public void run() {
+    }
+
+    public void startMutiThread() throws IOException, ClassNotFoundException {
+        pool = MyThreadspool.getInstance();
+        send();
+        execute();
+    }
     public void setData(Frame frame) throws InterruptedException {
+        System.out.println("task:"+task.size());
         task.put(frame.clone());
     }
     public synchronized void setSendData(byte[] data) throws InterruptedException {
         sendData.put(data);
     }
-    public void send(){
-        t1 = new Thread("t1"){
+    private void send(){
+        t1 = new Thread("t1P"){
             @Override
             public void run(){
-                try {
-                    post.send(sendData.take());
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
+                while (!interrupted()){
+                    try {
+                            post.send(sendData.take());
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+
             }
         };
         t1.start();
     }
 
     private void execute(){
-        t2 = new Thread("t2"){
+        t2 = new Thread("t2P"){
             @Override
             public void run(){
-                try {
-                    pool.execute(task.take());
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                while (!interrupted()){
+                    try {
+                        pool.execute(task.take());
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         };
